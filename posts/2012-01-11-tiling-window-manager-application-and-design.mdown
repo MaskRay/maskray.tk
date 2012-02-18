@@ -1,0 +1,7 @@
+---
+title: Tiling window manager的应用与设计
+author: MaskRay
+tags: desktop
+---
+
+[pdf下载](../files/tiling-window-manager-application-and-design.pdf)
