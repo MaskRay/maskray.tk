@@ -61,12 +61,10 @@ main = hakyll $ do
 
     -- Render RSS feed
     match "atom.xml" $ route idRoute
-   -- create "atom.xml" $
-   --     requireAll_ "posts/*"
-   --         >>> mapCompiler (arr $ copyBodyToField "description")
-   --         >>> renderRss feedConfiguration
-    create "atom.xml" $ renderRss feedConfiguration $
-        map (>>> copyValue "body" "description") (take 3 postPages)
+    create "atom.xml" $
+        requireAll_ "posts/*"
+            >>> mapCompiler (arr $ copyBodyToField "description")
+            >>> renderRss feedConfiguration
 
     -- Read templates
     match "templates/*" $ compile templateCompiler
