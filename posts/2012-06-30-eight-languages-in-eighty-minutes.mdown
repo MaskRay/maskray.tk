@@ -1,0 +1,17 @@
+---
+title: 80分钟8语言
+author: MaskRay
+tags: haskell
+---
+
+今天要做一个关于不同编程语言的演讲，我介绍了 Scheme, Smalltalk, Lua, Perl, Ruby, Prolog, Erlang, OCaml, Haskell，其中 Perl 是作为反例出现的。
+这些语言大多是这一年用零碎时间学的，像 Lua、Prolog、Erlang、OCaml 都只是看完了一两本入门的书，对它们的特点、优点短处、擅长领域有了个比较粗浅的认识；
+Scheme、Smalltalk 则是一本书都没看完，理解就更为肤浅了；Haskell 虽然看过两本入门教材，也翻看过不少文章，但它博大精深，广博之处只能窥见一二，精妙之处也无法领会太多，但还是列出了一些我所知道的。
+
+最初只知道C/C++，参加竞赛后写了大量C++程序，不过工程方面的C++基本不会。到学了一点Python体会到dynamic typing和reflective带来的全新体验(但不满它古怪的模块名、单表达式lambda和其他一些我认为是wart的地方，所以也就没继续学下去)。后来又看了Perl三部曲，对它的种种缺陷有了深切体会。再后来通过SICP学了一些Scheme，因为一个窗口管理器xmonad开始学Haskell，堕入了functional programming的无底深渊。认真地学了些OCaml和Ruby，学习离散数学时看了一点Prolog，面向对象程序设计时看了一些Smalltalk、Lua、Falcon，最近又学了些Erlang，每一次，这些奇奇怪怪的编程语言都会给我新的体验，让我对编程语言有全新的认识和理解。
+
+因为没有料及投影仪不能用，今天的活动耽误了大家不少时间，真是抱歉……看到 xq 的网线路标，mt 的人肉路标，很是震撼。感谢 gjb 的宣传工作，zt 提供场地，更感谢大家耐心等着我们摆弄投影设备，一路拔山涉水来到FIT楼，并且坚持着听完 xq 和我那枯燥乏味的语言介绍……和xq总共讲了170分钟上下的样子，这点时间要理解任何一门单独的语言都是远远不够的，而且以我对其中任何一门语言的了解都没法讲清楚，只是希望大家能接触到不同范式的语言，引发对它们优劣的思考。
+
+
+幻灯片我做得挺用心的，可以在这里下载：
+[pdf下载](../files/eight-languages-in-eighty-minutes.pdf)

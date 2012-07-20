@@ -1,0 +1,55 @@
+---
+title: gcc中sqrt实现
+author: MaskRay
+tags: c++, haskell
+---
+
+对于 `sqrt(3);`，`Visual Studio` 会报告有歧义的重载函数调用，而 `gcc` 却能把这个解释为对 `sqrt(double)` 的调用。
+研究了一下 `gcc` 的实现，发现 `sqrt` 其实是《C++ Templates: The Complete Guide》中提到的 `type function`，使用了名为
+`SFINAE (substitution failure is not an error)` 的技术。这里是给出一个使用该技术的 `sqrt` 的简易实现：
+
+    #include <cmath>
+    #include <cstdio>
+    using namespace std;
+    
+    template<typename T>
+    struct is_int { enum {type = 0}; };
+    
+    template<>
+    struct is_int<int> { enum {type = 1}; };
+    
+    template<typename T, bool>
+    struct enable_if {};
+    
+    template<typename T>
+    struct enable_if<T, true> { typedef T type; };
+    
+    template<typename T>
+    typename enable_if<double, is_int<T>::type>::type sqr(T a)
+    { return sqrt(double(a)); }
+    
+    double sqr(double a) { return sqrt(a); }
+    long double sqr(long double a) { return sqrt(a); }
+    float sqr(float a) { return sqrt(a); }
+    
+    int main()
+    {
+        printf("%lf\n", sqr(3));
+        // compile error: printf("%lf\n", sqr((char)3));
+        printf("%lf\n", sqr(3.));
+        printf("%lf\n", sqr(3.f));
+    }
+
+可见 `C++` 的实现相当繁琐。这也算是 `partial template specialization` 的应用，`Haskell` 的 `type class` 使用 `closed-world assumption`，所以没有直接的对应物，但我们可以给 `Integral` 做一个 wrapper：
+
+    {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+    class Sqrt a where
+      sqrt_ :: a -> a
+    
+    instance Sqrt Double where
+      sqrt_ = sqrt
+    
+    newtype WrappedIntegral a = WrappedIntegral a deriving (Num, Show)
+    
+    instance Integral a => Sqrt (WrappedIntegral a) where
+      sqrt_ = const 17

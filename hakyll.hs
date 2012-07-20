@@ -64,6 +64,7 @@ main = hakyll $ do
     create "atom.xml" $
         requireAll_ "posts/*"
             >>> mapCompiler (arr $ copyBodyToField "description")
+            >>> arr (reverse . chronological)
             >>> renderRss feedConfiguration
 
     -- Read templates

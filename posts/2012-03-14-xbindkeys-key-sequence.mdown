@@ -1,0 +1,89 @@
+---
+title: 给xbindkeys添加key sequence支持
+author: MaskRay
+tags: xbindkeys scheme
+---
+
+`xbindkeys` 不支持 `emacs` 风格的 `key sequence`，不过由于它可以调用 `guile` 来支持 `scheme` 的配置文件。
+`xbindkeys` 的 `tarball` 里待了一个配置文件，支持 `key sequence` 的特殊形式：两个键的序列。
+
+最近正好学了些 `scheme`，就好好折腾了一把，写了一份配置文件，可以支持任意长的 `key sequence`(当然太长的一般用不到)。
+
+    (define (delete-duplicates l)
+      (cond ((null? l) '())
+            ((memq (car l) (cdr l)) (delete-duplicates (cdr l)))
+            (else (cons (car l) (delete-duplicates (cdr l))))
+    	)
+      )
+
+    (define global-map '())
+
+    (define (register keys action)
+      (define (loop getmap setmap keys)
+        (if (null? keys)
+    	(setmap action)
+    	(let ((k (car keys)))
+    	  (if (eq? #f (assoc k (getmap)))
+    	      (setmap (assoc-set! (getmap) k '())))
+    	  (loop (lambda () (cdr (assoc k (getmap))))
+    		(lambda (m) (setmap (assoc-set! (getmap) k m)))
+    		(cdr keys))
+    	  )
+    	)
+        )
+      (loop (lambda () global-map) (lambda (m) (set! global-map m)) keys)
+      )
+
+    (define (grab keymap)
+      (define (proc k)
+        (define action (cdr (assoc k keymap)))
+        (ungrab-all-keys)
+        (remove-all-keys)
+        (if (string? action)
+    	(begin
+    	  (run-command action)
+    	  (reset-first-binding)
+    	  )
+    	(grab action)
+    	)
+        (grab-all-keys)
+        )
+      (map (lambda (k)
+    	 (xbindkey-function k (lambda () (proc k)))
+     	 ) (delete-duplicates (map car keymap)))
+      (if (not (eq? global-map keymap))
+          (xbindkey-function '(control g) (lambda () (reset-first-binding)))
+          )
+      )
+
+    (define (first-binding)
+      (grab global-map)
+      )
+
+    (define (reset-first-binding)
+      (ungrab-all-keys)
+      (remove-all-keys)
+      (first-binding)
+      (grab-all-keys))
+
+    (define (simple s)
+      (string-concatenate `("wmctrl -xa " ,s "||" ,s))
+      )
+
+    (register '((control semicolon) x) (simple "xterm"))
+    (register '((control semicolon) u) "wmctrl tmux || -T tmux -e tmux attach -t default")
+    (register '((control semicolon) e) "wmctrl -xa Emacs || emacsclient -c -n")
+    (register '((control semicolon) v) "wmctrl -xa Vim || gvim")
+    (register '((control semicolon) f) (simple "firefox"))
+    (register '((control semicolon) i) (simple "evince"))
+    (register '((control semicolon) (control semicolon)) "xdotool send ctrl+semicolon")
+
+    (first-binding)
+
+用法很简单，模仿代码中的 `(register ...)`，在这串键绑定里添删你自己的。`xbindkeys` 还支持 `shift` `mod3` `release` 等修饰符。
+`release` 指的是键释放时而不是 `press` 时执行动作。`xbindkeys -d` 还有其他一些关于修饰符的例子。
+
+我的键绑定中 `wmctrl -xa` 是一个用外部命令搭建的简易 `jump-or-exec`，`wmctrl` 会检查窗口 `title` 和 `class`，如果不存在则执行，否则给相应窗口焦点。
+`(simple ...)` 针对的是 `title` 和 `class` 相同的情况。
+
+两次 `control semicolon` 被我映射为产生一个 `control semicolon`，`key sequence` 按到一半时按 `control g` 是取消。

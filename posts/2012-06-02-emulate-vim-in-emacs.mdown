@@ -1,0 +1,43 @@
+---
+title: Evil--在Emacs中模拟Vim
+author: MaskRay
+tags: emacs
+---
+
+## Vim模拟
+
+平心而论，Vim 的 modal editing 确实比 Emacs 强，而 Emacs 默认的按键绑
+定设计不好，不适合使用，要让它适合做工作环境往往要改大量按键。“一千个
+读者心中有一千个哈姆雷特”，Emacs 的配置也确实大相径庭。
+
+但和打字配套的附件功能始终不如 Emacs，比如 repl 环境、文件管理、笔记管
+理、minor mode 等。
+相当一部分 major mode(浅薄地说，和 Vim 的 filetype 对应)，都是 Emacs
+的比 Vim 的对应物好用，比如 [AUCTeX](http://www.gnu.org/software/auctex/)，
+[haskell-mode](http://www.haskell.org/haskellwiki/Haskell_mode_for_Emacs#Haskell-mode)
+，[tuareg-mode](http://www.emacswiki.org/emacs/TuaregMode)。
+
+## Evil
+
+[Evil](http://emacswiki.org/emacs/Evil) 是又一个 Vim 模拟器，是
+Vimpulse 和 vim-mode 的接替者。
+
+Pandoc 和 Gitit 的作者 John MacFarlane 也使用 Evil，他也是个能折腾工具
+的人，他的选择也能说明 Evil 确实不错：[http://john.macfarlane.usesthis.com/]()。
+
+[这篇文章](http://dnquark.com/blog/2012/02/emacs-evil-ecumenicalism/)
+介绍了一些 Evil 使用的技巧，另外强烈推荐 Michael Markert 的
+[Evil配置](https://github.com/cofi/dotfiles/blob/master/emacs.d/config/cofi-evil.el)。
+
+## 插件
+
+目前似乎有四个插件，个人认为最有用的是这两个：
+
+[evil-surround](https://github.com/timcharper/evil-surround)。用来模拟
+[surround.vim](https://github.com/tpope/vim-surround) 的。这项功能一直
+是 Emacs 的软肋，因为缺乏 normal mode，即使有 text object 的移植，换成
+key sequence 再加上 control meta 之类的键就变得比 surround.vim 笨拙很多了。
+
+[evil-leader](https://github.com/cofi/evil-leader)。用来模拟 Vim 的
+mapleader。我一般把 mapleader 设为逗号，添加 ido-find-file save-buffer compile
+等绑定。
